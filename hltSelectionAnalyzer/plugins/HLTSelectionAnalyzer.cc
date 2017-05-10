@@ -81,6 +81,9 @@ bool HLTSelectionAnalyzer::isvalueinarray(TString val, TString *arr, int size){
 
 
 void HLTSelectionAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+  //std::cout << "Start analyze function";
+
+
   // store event information
   const edm::EventAuxiliary& aux = iEvent.eventAuxiliary();
   runNums_.push_back( aux.run() );
@@ -88,14 +91,24 @@ void HLTSelectionAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
   evtNums_.push_back( aux.event() );
   const size_t numEvtsProcessed = evtNums_.size();
 
+  //std::cout << "Before jet pt";
+
+
   // get Jets
   edm::Handle< pat::JetCollection > h_inputJets;
   iEvent.getByToken( jetsToken,h_inputJets );
-  // Get Pt of first Jet
-  pat::Jet(Jet)=h_inputJets->at(0);
-  JetPt.push_back(Jet.pt());
-
+  // Get Pt of first Jet and check first if jets exist
+  if(h_inputJets->size() > 0)
+  {
+	pat::Jet(Jet)=h_inputJets->at(0);
+	JetPt.push_back(Jet.pt());
+  } 
+  else {
+	JetPt.push_back(0);
+  }
   
+  //std::cout << "Before trigger decisions";
+
 
   // get trigger decisions
   edm::Handle<edm::TriggerResults> hTriggerResults;
@@ -104,6 +117,9 @@ void HLTSelectionAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
   // store trigger decisions
   //std::cout << runNums_.back() << ":" << lumNums_.back() << ":" << evtNums_.back() << std::endl;
   const edm::TriggerNames& triggerNames = iEvent.triggerNames(*hTriggerResults);
+
+  //std::cout << "Before for loop";
+
 
   for(size_t iTrig = 0; iTrig < hTriggerResults->size(); ++iTrig) {
     TString triggerName = triggerNames.triggerName(iTrig).c_str();
@@ -130,6 +146,8 @@ void HLTSelectionAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
     }
   }
 
+  //std::cout << "Before second for loop";
+
 
   // check if there are any triggers in the list of known triggers
   // that are not in the triggerNames list (do not apply to this event)
@@ -140,6 +158,10 @@ void HLTSelectionAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
       throw cms::Exception("BadEventCount") << "Trigger path bookkeeping failed";
     }
   }
+
+  //std::cout << "End analyze function";
+
+
 }
 
 

@@ -18,7 +18,7 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source(
     "PoolSource",
     fileNames = cms.untracked.vstring(
-        "/store/data/Run2016C/SingleMuon/MINIAOD/03Feb2017-v1/50000/0022D65B-05EB-E611-84E9-0025905A6104.root"
+        "##DATASETPATH##"
     )
 )
 
@@ -29,7 +29,7 @@ process.analysis=cms.EDAnalyzer("HLTSelectionAnalyzer",OutTreeName = cms.string(
 
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("HLTSelection.root")
+    fileName = cms.string("##DATASETNAME##")
 )
 
 process.p = cms.Path(
