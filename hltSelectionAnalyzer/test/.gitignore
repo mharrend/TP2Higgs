@@ -1,0 +1,6 @@
+*.root
+*.sh.e*
+*.sh.o*
+jobscript_HLT*
+TP2_exercise_cfg_HLT*
+
